@@ -21,6 +21,7 @@ fun NavGraph() {
         composable(Screen.Home.route) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text(text = "Main Screen")
+
             }
         }
     }

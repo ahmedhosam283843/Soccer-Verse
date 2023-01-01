@@ -19,13 +19,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.soccerverse.data.remote.SoccerverseApi
 import com.example.soccerverse.navigation.NavGraph
+import com.example.soccerverse.repository.SoccerVerseRepository
 import com.example.soccerverse.ui.theme.SoccerVerseTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -35,6 +38,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     NavGraph()
+
                 }
             }
         }
@@ -66,7 +70,9 @@ fun SplashScreen(
         Image(
             painter = painterResource(id = R.drawable.goal),
             contentDescription = "Splash Logo",
-            modifier = Modifier.size(200.dp).alpha(alphaAnim.value)
+            modifier = Modifier
+                .size(200.dp)
+                .alpha(alphaAnim.value)
         )
     }
 }
