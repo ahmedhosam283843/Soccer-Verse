@@ -1,4 +1,4 @@
-package com.example.soccerverse.data.remote.responses
+package com.example.soccerverse.data.remote.responses.leagueresponses
 
 data class Parameters(
     val season: String,

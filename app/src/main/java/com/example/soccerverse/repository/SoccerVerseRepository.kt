@@ -2,7 +2,7 @@ package com.example.soccerverse.repository
 
 import com.example.soccerverse.data.remote.SoccerverseApi
 import com.example.soccerverse.data.remote.TypeEnum
-import com.example.soccerverse.data.remote.responses.LeagueList
+import com.example.soccerverse.data.remote.responses.leagueresponses.LeagueList
 import com.example.soccerverse.util.Resource
 import dagger.hilt.android.scopes.ActivityScoped
 import java.lang.Exception

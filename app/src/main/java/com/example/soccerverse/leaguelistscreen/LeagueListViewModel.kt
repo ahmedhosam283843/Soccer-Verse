@@ -10,7 +10,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.palette.graphics.Palette
 import com.example.soccerverse.data.models.LeagueListEntry
 import com.example.soccerverse.data.remote.TypeEnum
-import com.example.soccerverse.data.remote.responses.LeagueList
 import com.example.soccerverse.repository.SoccerVerseRepository
 import com.example.soccerverse.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel

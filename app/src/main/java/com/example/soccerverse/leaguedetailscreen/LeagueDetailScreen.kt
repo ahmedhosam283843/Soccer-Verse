@@ -7,14 +7,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.produceState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,6 +18,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -31,7 +28,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.soccerverse.data.remote.responses.LeagueList
+import com.example.soccerverse.data.remote.responses.leagueresponses.LeagueList
+import com.example.soccerverse.navigation.BottomNavItem
 import com.example.soccerverse.util.Resource
 import java.util.*
 
@@ -41,7 +39,7 @@ fun LeagueDetailScreen(
     leagueId: Int,
     navController: NavController,
     topPadding: Dp = 20.dp,
-    leagueImageSize: Dp = 200.dp,
+    leagueImageSize: Dp = 120.dp,
     viewModel: LeagueDetailViewModel = hiltViewModel()
 ) {
     val leagueInfo = produceState<Resource<LeagueList>>(initialValue = Resource.Loading()) {
@@ -66,7 +64,7 @@ fun LeagueDetailScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(
-                    top = topPadding + leagueImageSize / 2f,
+                    top = leagueImageSize / 2f,
                     start = 16.dp,
                     end = 16.dp,
                     bottom = 16.dp
@@ -185,14 +183,87 @@ fun LeagueDetailSection(
             }",
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
-            fontSize = 30.sp,
+            fontSize = 20.sp,
             color = MaterialTheme.colors.onSurface
         )
-//        PokemonTypeSection(types = pokemonInfo.types)
-//        PokemonDetailDataSection(
-//            pokemonWeight = pokemonInfo.weight,
-//            pokemonHeight = pokemonInfo.height
-//        )
-//        PokemonBaseStats(pokemonInfo = pokemonInfo)
+
+        var appBarState by remember {
+            mutableStateOf(BottomNavItem.Table.title)
+        }
+
+        DetailsSectionBar(onClick = {
+            appBarState = it
+        }, appBarState)
+
+        when (appBarState) {
+            BottomNavItem.Table.title -> {
+                TableSection(leagueInfo = leagueInfo)
+            }
+            BottomNavItem.Matches.title -> {
+                MatchesSection(leagueInfo = leagueInfo)
+            }
+            BottomNavItem.Teams.title -> {
+                TeamsSection(leagueInfo = leagueInfo)
+            }
+        }
+
+
     }
+}
+
+@Composable
+fun TeamsSection(leagueInfo: LeagueList) {
+
+}
+
+@Composable
+fun MatchesSection(leagueInfo: LeagueList) {
+
+}
+
+@Composable
+fun TableSection(leagueInfo: LeagueList) {
+    // teams standing
+
+}
+
+@Composable
+fun DetailsSectionBar(onClick: (String) -> Unit, sectionName: String) {
+    val items = listOf(
+        BottomNavItem.Table,
+        BottomNavItem.Matches,
+        BottomNavItem.Teams,
+
+        )
+    BottomAppBar(
+        modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp).clip(RoundedCornerShape(24.dp)),
+        elevation = 4.dp,
+        backgroundColor = MaterialTheme.colors.surface,
+        content = {
+            items.forEach { item ->
+                BottomNavigationItem(
+                    icon = {
+                        Icon(
+                            painterResource(id = item.icon),
+                            contentDescription = item.title
+                        )
+                    },
+                    label = {
+                        Text(
+                            text = item.title,
+                            fontSize = 15 .sp
+                        )
+                    },
+                    selectedContentColor = MaterialTheme.colors.onSurface,
+                    unselectedContentColor = MaterialTheme.colors.onSurface.copy(0.4f),
+                    alwaysShowLabel = true,
+                    selected = item.title==sectionName,
+                    onClick = { onClick(item.title) }
+                )
+            }
+
+        }
+    )
+
+
 }

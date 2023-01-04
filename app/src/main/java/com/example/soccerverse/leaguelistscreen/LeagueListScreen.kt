@@ -1,6 +1,5 @@
 package com.example.soccerverse.leaguelistscreen
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -20,7 +19,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -30,7 +28,6 @@ import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.example.soccerverse.data.models.LeagueListEntry
-import com.example.soccerverse.data.remote.responses.LeagueList
 import com.example.soccerverse.navigation.Screen
 import com.example.soccerverse.ui.theme.RobotoCondensed
 
@@ -247,3 +244,4 @@ fun RetrySection(
         }
     }
 }
+

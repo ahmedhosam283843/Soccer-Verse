@@ -1,8 +1,8 @@
-package com.example.soccerverse.data.remote.responses
+package com.example.soccerverse.data.remote.responses.standingresponses
 
-data class LeagueList(
+data class LeagueStanding(
     val errors: List<Any>,
-    val get: String,
+    val `get`: String,
     val paging: Paging,
     val parameters: Parameters,
     val response: List<Response>,
