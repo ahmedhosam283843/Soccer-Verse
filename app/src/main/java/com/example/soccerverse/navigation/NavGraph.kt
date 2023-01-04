@@ -52,5 +52,22 @@ fun NavGraph() {
             )
 
         }
+        composable(
+            "${Screen.TeamDetail.route}/{teamId}",
+            arguments = listOf(
+                navArgument("teamId") {
+                    type = NavType.IntType
+                }
+            )
+        ) {
+            val teamId = remember {
+                it.arguments!!.getInt("teamId")
+            }
+//            TeamDetailScreen(
+//                teamId = teamId,
+//                navController = navController
+//            )
+
+        }
     }
 }

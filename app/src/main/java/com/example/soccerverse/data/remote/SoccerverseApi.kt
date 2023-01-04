@@ -1,6 +1,7 @@
 package com.example.soccerverse.data.remote
 
 import com.example.soccerverse.data.remote.responses.leagueresponses.LeagueList
+import com.example.soccerverse.data.remote.responses.leagueteamsresponse.LeagueTeam
 import com.example.soccerverse.data.remote.responses.standingresponses.LeagueStanding
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -24,5 +25,12 @@ interface SoccerverseApi {
         @Query("season") season: Int?,
         @Query("league") league: Int?
     ): LeagueStanding
+
+    @GET("teams")
+    suspend fun getTeams(
+        @Query("season") season: Int?,
+        @Query("league") league: Int?
+    ): LeagueTeam
+
 
 }
