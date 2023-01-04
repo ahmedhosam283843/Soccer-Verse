@@ -20,6 +20,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -28,7 +29,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
@@ -36,6 +36,7 @@ import coil.request.ImageRequest
 import com.example.soccerverse.data.models.TeamListEntry
 import com.example.soccerverse.data.remote.responses.leagueresponses.LeagueList
 import com.example.soccerverse.navigation.BottomNavItem
+import com.example.soccerverse.navigation.Screen
 import com.example.soccerverse.util.Resource
 import java.util.*
 
@@ -140,7 +141,12 @@ fun LeagueDetailScreen(
                     leagueInfo.data?.let { MatchesSection(leagueInfo = it) }
                 }
                 BottomNavItem.Teams.title -> {
-                    leagueInfo.data?.let { TeamsSection(leagueInfo = it) }
+                    leagueInfo.data?.let {
+                        TeamsSection(
+                            leagueInfo = it,
+                            navController = navController
+                        )
+                    }
                 }
             }
         }
@@ -233,7 +239,11 @@ fun LeagueDetailSection(
 }
 
 @Composable
-fun TeamsSection(leagueInfo: LeagueList, viewModel: LeagueDetailViewModel = hiltViewModel()) {
+fun TeamsSection(
+    leagueInfo: LeagueList,
+    viewModel: LeagueDetailViewModel = hiltViewModel(),
+    navController: NavController
+) {
     val teamsList by remember {
         mutableStateOf(viewModel.teamList)
     }
@@ -244,7 +254,11 @@ fun TeamsSection(leagueInfo: LeagueList, viewModel: LeagueDetailViewModel = hilt
             content = {
                 teamsList.value.forEach {
                     item {
-                        TeamCard(team = it)
+                        TeamCard(
+                            team = it,
+                            navController = navController,
+                            leagueId = leagueInfo.response[0].league.id
+                        )
                     }
                 }
             })
@@ -253,17 +267,28 @@ fun TeamsSection(leagueInfo: LeagueList, viewModel: LeagueDetailViewModel = hilt
 }
 
 @Composable
-fun TeamCard(team: TeamListEntry) {
+fun TeamCard(
+    team: TeamListEntry,
+    viewModel: LeagueDetailViewModel = hiltViewModel(),
+    navController: NavController,
+    leagueId: Int
+) {
+    val defaultDominantColor = MaterialTheme.colors.surface
+    val dominantColor = remember {
+        mutableStateOf(defaultDominantColor)
+    }
     Box(
         modifier = Modifier
             .padding(24.dp)
             .clip(CircleShape)
             .background(Color.Transparent)
             .clickable {
-
-            }
-        , contentAlignment = Alignment.Center
+                navController.navigate(
+                    "${Screen.TeamDetail.route}/${team.number}/${leagueId}/${dominantColor.value.toArgb()}"
+                )
+            }, contentAlignment = Alignment.Center
     ) {
+
         SubcomposeAsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(team.imageUrl)
@@ -276,6 +301,12 @@ fun TeamCard(team: TeamListEntry) {
                     modifier = Modifier.scale(0.5f)
                 )
             },
+            onSuccess = { success ->
+                viewModel.calculateDominantColor(success.result.drawable) { color ->
+                    dominantColor.value = color
+                }
+            },
+
             modifier = Modifier
                 .size(100.dp)
         )

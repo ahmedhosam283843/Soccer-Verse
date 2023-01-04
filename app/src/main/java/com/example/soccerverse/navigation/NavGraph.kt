@@ -16,6 +16,7 @@ import androidx.navigation.navArgument
 import com.example.soccerverse.SplashScreen
 import com.example.soccerverse.leaguedetailscreen.LeagueDetailScreen
 import com.example.soccerverse.leaguelistscreen.LeagueListScreen
+import com.example.soccerverse.teamdetailscreen.TeamDetailScreen
 
 @Composable
 fun NavGraph() {
@@ -53,20 +54,37 @@ fun NavGraph() {
 
         }
         composable(
-            "${Screen.TeamDetail.route}/{teamId}",
+            "${Screen.TeamDetail.route}/{teamId}/{leagueId}/{dominantColor}",
             arguments = listOf(
                 navArgument("teamId") {
                     type = NavType.IntType
-                }
+                },
+                navArgument("leagueId") {
+                    type = androidx.navigation.NavType.IntType
+                },
+                navArgument("dominantColor") {
+                    type = NavType.IntType
+                },
+
             )
         ) {
             val teamId = remember {
                 it.arguments!!.getInt("teamId")
             }
-//            TeamDetailScreen(
-//                teamId = teamId,
-//                navController = navController
-//            )
+
+            val leagueId = remember {
+                it.arguments!!.getInt("leagueId")
+            }
+            val dominantColor = remember {
+                val color = it.arguments?.getInt("dominantColor")
+                color?.let { Color(it) } ?: Color.White
+            }
+            TeamDetailScreen(
+                teamId = teamId,
+                leagueId = leagueId,
+                dominantColor = dominantColor,
+                navController = navController
+            )
 
         }
     }

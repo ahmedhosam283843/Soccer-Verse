@@ -32,5 +32,13 @@ interface SoccerverseApi {
         @Query("league") league: Int?
     ): LeagueTeam
 
+    @GET("teams")
+    suspend fun getTeamById(
+        @Query("id") id: Int?,
+        @Query("league") league: Int?,
+        @Query("season") season: Int?,
+    ): LeagueTeam
+
+
 
 }

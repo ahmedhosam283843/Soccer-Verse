@@ -50,4 +50,13 @@ class SoccerVerseRepository @Inject constructor(
         }
         return Resource.Success(response)
     }
+
+    suspend fun getTeamById(season: Int, league: Int, team: Int) : Resource<LeagueTeam>{
+        val response = try {
+            api.getTeamById(team, league, season)
+        }catch (e: Exception){
+            return Resource.Error(e.message)
+        }
+        return Resource.Success(response)
+    }
 }
