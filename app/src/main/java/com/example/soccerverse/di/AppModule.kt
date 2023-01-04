@@ -18,7 +18,7 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun providePokemonRepo(
+    fun provideLeagueRepo(
         api: SoccerverseApi
     ) = SoccerVerseRepository(api)
 

@@ -12,4 +12,10 @@ interface SoccerverseApi {
         @Query("type") type: TypeEnum?
     ): LeagueList
 
+    @GET("leagues")
+    suspend fun getLeaguesById(
+        @Query("season") season: Int?,
+        @Query("id") id: Int?
+    ): LeagueList
+
 }

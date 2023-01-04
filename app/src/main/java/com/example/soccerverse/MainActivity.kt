@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.soccerverse.data.remote.SoccerverseApi
 import com.example.soccerverse.navigation.NavGraph
+import com.example.soccerverse.navigation.Screen
 import com.example.soccerverse.repository.SoccerVerseRepository
 import com.example.soccerverse.ui.theme.SoccerVerseTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,7 +39,6 @@ class MainActivity: ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     NavGraph()
-
                 }
             }
         }
@@ -63,7 +63,7 @@ fun SplashScreen(
         startAnimation = true
         delay(4000L)
         navController.popBackStack()
-        navController.navigate("main_screen")
+        navController.navigate(Screen.Home.route)
     }
 
     Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
