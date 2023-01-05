@@ -1,15 +1,15 @@
 package com.example.soccerverse.leaguedetailscreen
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
+import androidx.compose.material.TextFieldDefaults.indicatorLine
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
@@ -33,8 +33,11 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
+import com.example.soccerverse.data.models.LeagueListEntry
+import com.example.soccerverse.data.models.LeagueStandingEntry
 import com.example.soccerverse.data.models.TeamListEntry
 import com.example.soccerverse.data.remote.responses.leagueresponses.LeagueList
+import com.example.soccerverse.data.remote.responses.standingresponses.LeagueStanding
 import com.example.soccerverse.navigation.BottomNavItem
 import com.example.soccerverse.navigation.Screen
 import com.example.soccerverse.util.Resource
@@ -52,6 +55,7 @@ fun LeagueDetailScreen(
     val leagueInfo = produceState<Resource<LeagueList>>(initialValue = Resource.Loading()) {
         value = viewModel.getLeagueById(leagueId)
         viewModel.getLeagueTeams(leagueId)
+        viewModel.loadLeagueStanding(leagueId)
     }.value
 
 
@@ -129,16 +133,12 @@ fun LeagueDetailScreen(
 
         Box(
             modifier = Modifier
-                .align(Alignment.TopCenter)
-                .offset(y = 260.dp)
-                .padding(bottom = 50.dp)
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 20.dp, top = 265.dp)
         ) {
             when (appBarState) {
                 BottomNavItem.Table.title -> {
                     leagueInfo.data?.let { TableSection(leagueInfo = it) }
-                }
-                BottomNavItem.Matches.title -> {
-                    leagueInfo.data?.let { MatchesSection(leagueInfo = it) }
                 }
                 BottomNavItem.Teams.title -> {
                     leagueInfo.data?.let {
@@ -147,6 +147,9 @@ fun LeagueDetailScreen(
                             navController = navController
                         )
                     }
+//                BottomNavItem.Matches.title -> {
+//                    leagueInfo.data?.let { MatchesSection(leagueInfo = it) }
+//                }
                 }
             }
         }
@@ -313,16 +316,79 @@ fun TeamCard(
     }
 }
 
-@Composable
-fun MatchesSection(leagueInfo: LeagueList) {
-
-}
+//@Composable
+//fun MatchesSection(leagueInfo: LeagueList) {
+//
+//}
 
 @Composable
 fun TableSection(leagueInfo: LeagueList, viewModel: LeagueDetailViewModel = hiltViewModel()) {
-
+    val leagueStanding by remember {
+        mutableStateOf(viewModel.leagueStanding)
+    }
+    if (leagueStanding.value.isNotEmpty()) {
+        DataTable(
+            modifier = Modifier.padding(horizontal = 26.dp, vertical = 12.dp),
+            columnCount = 8,
+            rowCount = leagueStanding.value.size + 1,
+            cellContent = { columnIndex, rowIndex ->
+                DataTableCell(
+                    leagueStanding = leagueStanding.value,
+                    columnIndex = columnIndex,
+                    rowIndex = rowIndex
+                )
+            }
+        )
+    }
 }
 
+@Composable
+fun DataTableCell(leagueStanding: List<LeagueStandingEntry>, columnIndex: Int, rowIndex: Int) {
+    if (rowIndex == 0) {
+        Text(
+            text = when (columnIndex) {
+                0 -> "Pos"
+                1 -> "Team"
+                2 -> "Pts"
+                3 -> "GD"
+                4 -> "P"
+                5 -> "W"
+                6 -> "D"
+                7 -> "L"
+                else -> ""
+            },
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .width(80.dp)
+                .border(1.dp, Color.White)
+                .padding(8.dp)
+        )
+    } else {
+        Text(
+            text = when (columnIndex) {
+                0 -> leagueStanding[rowIndex - 1].teamPosition.toString()
+                1 -> leagueStanding[rowIndex - 1].teamName
+                2 -> leagueStanding[rowIndex - 1].teamPoints.toString()
+                3 -> leagueStanding[rowIndex - 1].teamGoalDifference.toString()
+                4 -> leagueStanding[rowIndex - 1].teamPlayedGames.toString()
+                5 -> leagueStanding[rowIndex - 1].teamWon.toString()
+                6 -> leagueStanding[rowIndex - 1].teamDraw.toString()
+                7 -> leagueStanding[rowIndex - 1].teamLost.toString()
+                else -> ""
+            },
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .width(80.dp)
+                .border(1.dp, Color.White)
+                .padding(8.dp),
+            maxLines = 1
+        )
+    }
+}
+
+
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun DetailsSectionBar(
     onClick: (String) -> Unit,
@@ -331,7 +397,7 @@ fun DetailsSectionBar(
 ) {
     val items = listOf(
         BottomNavItem.Table,
-        BottomNavItem.Matches,
+//        BottomNavItem.Matches,
         BottomNavItem.Teams,
 
         )
